@@ -14,7 +14,7 @@ const getManga = async (page = 1) => {
   try {
     setLoading(true);
     const { data } = await axios.get(
-      `https://manga-roan-one.vercel.app/manga/comick/latest?&page=${page}`
+      `https://manga-api.vercel.app/manga/comick/latest?&page=${page}`
     );
     setManga(data);
     setLoading(false);
@@ -37,6 +37,23 @@ const handleNextPage = () => {
   setPage(page + 1);
 };
 
+ const timeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const difference = now - date;
+
+    const minutes = Math.floor(difference / 1000 / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+      return `${days} day${days > 1 ? 's' : ''} ago`;
+    } else if (hours > 0) {
+      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    } else {
+      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    }
+  };
 useEffect(() => {
   getManga(page);
 }, [page]);
@@ -54,15 +71,16 @@ useEffect(() => {
           <div key={item.id}>
                                        <Links  to={`/read/manga/comick/chapter/${item.chapterId}`}
                                                  state={{ slug: `${item.slug}` }}>
+                                                  <TONG2> 
+                          <p>{timeAgo(item.created_at)}</p> {/* Displaying time only */}
+            </TONG2>
                                                                <img src={item.thumbnail.url} className="card-img"/>
  
                    
-                               <ItemHead> 
- 
- 
-                                                 <p>{item.title}</p>
-                                         <p>Chapter {item.chap}</p>
-             </ItemHead>  
+                              <TONG>         <p>{item.title}</p>
+                                          <p>Chapter {item.chap}</p>
+
+                  </TONG> {/* Display countdown timer */}
              </Links>               
                      </div>
 
@@ -75,8 +93,8 @@ useEffect(() => {
 
 const HomeDiv = styled.div`
   margin: 1.5rem 5rem 1rem 5rem;
-  background: #2f2f2f;
-   border-radius: 0.5rem;
+background: #182335; 
+  border-radius: 0.5rem;
 
       @media screen and (max-width: 1200px) {
     margin: 1rem 1rem 0rem 1rem;
@@ -88,7 +106,7 @@ const HomeDiv = styled.div`
 const BoxHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  background:   linear-gradient(0deg, rgba(79, 79, 79, 0) 0, #4f4f4f 100%);
+  background: #182335;
  border-radius: 0.5rem;
 
      padding: 10px 15px;
@@ -158,8 +176,32 @@ const HotChapter = styled.div`
 
      }
   }
+    @media (max-width: 768px) {
+    img {
+     width: 145px;
+       
+
+     }
+  }
 `;
-const ItemHead = styled.p`
+const TONG2 = styled.p`
+position: absolute;
+ overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+     width: 160px;
+        background: rgba(0, 0, 0, 0.8);
+      text-align: center;
+ 
+   @media (max-width: 768px) {
+     
+     width: 145px;
+       
+
+ }
+ 
+`;
+const ItemHead = styled.div`
   position: absolute;
   background: rgba(0, 0, 0, 0.8);
   transition: 0.5s ease;
@@ -184,17 +226,22 @@ const ItemHead = styled.p`
         margin-bottom: 20px;
 
   }
-
+  @media(max-width: 1400px){
+    width: 12.3% !important;
+  }
   
   @media (max-width: 1200px) {
-    width: 16% !important; /* Adjust the width for smaller screens */
+    width: 14.3% !important; /* Adjust the width for smaller screens */
   }
     @media (max-width: 1000px) {
-    width: 17% !important; /* Adjust the width for smaller screens */
+    width: 17% !important; /* Adjust the width for smaller screens */ 
   }
 
 
   @media (max-width: 768px) {
+    width: 31% !important; /* Adjust the width for even smaller screens */
+  }
+   @media (max-width:500px) {
     width: 34% !important; /* Adjust the width for even smaller screens */
   }
    @media (max-width: 400px) {
@@ -204,6 +251,37 @@ const ItemHead = styled.p`
      
 `;
 
+const TONG = styled.p`
+position: absolute;
+ overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    width: 160px;
+      font-size: 15px;
+  border-radius: 0.5rem;
+    margin-bottom: 0.3rem;
+       background: rgba(0, 0, 0, 0.8);
+     margin-top: -42px;      
+       &:hover {
+          border-radius: 0.5rem;
+
+    background:#8bbadd;
+      color: black !important;
+    }
+ @media (max-width: 768px) {
+     
+     width: 145px;
+       
+
+ }
+    p{
+       overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    
+    }
+`;
 const Links = styled(Link)`
    font-size: 1.1rem;
   font-family: "Gilroy-Medium", sans-serif;

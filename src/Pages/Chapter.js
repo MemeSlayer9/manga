@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams, useLocation, Link  } from "react-router-dom";
+import { useParams, useLocation, Link, useNavigate   } from "react-router-dom";
 import styled from "styled-components";
 import Modal from 'react-modal';
   import ChapterSkeleton from "../components/skeletons/ChapterSkeleton";
@@ -24,7 +24,25 @@ const [firstChapterNumber, setFirstChapterNumber] = useState(null);
   const [scrollButtonVisible, setScrollButtonVisible] = useState(false);
 
   const [selectedChapter, setSelectedChapter] = useState(null);
+    const [selectedChapterId, setSelectedChapterId] = useState("");
 
+  const navigate = useNavigate();
+ const handleChange = (event) => {
+    const chapterId = event.target.value;
+    setSelectedChapterId(chapterId);
+    
+    // Navigate to the selected chapter
+    navigate(`/read/manga/comick/chapter/${chapterId}`, {
+      state: { slug },
+    });
+  };
+
+  // Find the selected chapter number based on the selectedChapterId
+  const selectedChapterNumber = (chapters.chapters || []).find(
+    (chapter) => chapter.chapterId === selectedChapterId
+  )?.number || "";
+
+  
 const handleSizeChange = (e) => {
     setImageSize(parseInt(e.target.value)); // Convert string value to integer
   };
@@ -64,6 +82,9 @@ const handleSizeChange = (e) => {
      
   }, 500); // Adjust the delay as needed
 };
+
+ 
+
 const reverseTitle = (title) => {
   if (title) { // Check if title is defined
     const parts = title.split(' - '); // Split the title into parts using ' - '
@@ -106,7 +127,7 @@ const reverseTitle = (title) => {
     setLoading(true);
 
     try {
-const response = await axios.get(`https://manga-roan-one.vercel.app/manga/comick/chapter/${chapterId}`);
+const response = await axios.get(`https://manga-api.vercel.app/manga/comick/chapter/${chapterId}`);
 
       setDetail(response.data);
     } catch (error) {
@@ -116,6 +137,7 @@ const response = await axios.get(`https://manga-roan-one.vercel.app/manga/comick
     }
    };
   
+   console.log(`https://manga2-six.vercel.app/manga/comick/chapter/${chapterId}`);
  
  
   const getChapters = async () => {
@@ -172,6 +194,7 @@ const response = await axios.get(`https://manga-roan-one.vercel.app/manga/comick
       }
     };
  
+console.log("Modal isOpen:", modalIsOpen); // To check if the modal should be open
 
   useEffect(() => {
     
@@ -192,8 +215,8 @@ const response = await axios.get(`https://manga-roan-one.vercel.app/manga/comick
       {/* Scroll to top button */}
       {scrollButtonVisible && (
         <ScrollToTopButton onClick={scrollToTop}>
-          Scroll To Top
-        </ScrollToTopButton>
+  <ArrowUp />
+          </ScrollToTopButton>
       )}
     </div>
   <YAWA> 
@@ -226,7 +249,17 @@ const response = await axios.get(`https://manga-roan-one.vercel.app/manga/comick
 
           <GAGO2>{reverseTitle(item.title)}</GAGO2>
    </Link>
-    <GAGO onClick={() => openModal(item.chapter)}>
+     <Dropdown value={selectedChapterId} onChange={handleChange}>
+        <option value="" disabled>
+          Chapter {item.number}
+        </option>
+        {(chapters.chapters || []).map((chapter) => (
+          <Option key={chapter.chapterId} value={chapter.chapterId}>
+            Chapter {chapter.number}
+          </Option>
+        ))}
+      </Dropdown> 
+     <GAGO onClick={() => openModal(item.chapter)}>
       Chapter {item.number}
   </GAGO>
   
@@ -318,6 +351,16 @@ const response = await axios.get(`https://manga-roan-one.vercel.app/manga/comick
 
           <GAGO2>{reverseTitle(item.title)}</GAGO2>
    </Link>
+   <Dropdown value={selectedChapterId} onChange={handleChange}>
+        <option value="" disabled>
+          Chapter {item.number}
+        </option>
+        {(chapters.chapters || []).map((chapter) => (
+          <Option key={chapter.chapterId} value={chapter.chapterId}>
+            Chapter {chapter.number}
+          </Option>
+        ))}
+      </Dropdown>
    <GAGO onClick={() => openModal(item.chapter)}>
       Chapter {item.number}
   </GAGO>
@@ -337,14 +380,14 @@ const response = await axios.get(`https://manga-roan-one.vercel.app/manga/comick
       <StyledLi key={chapter.id}>
         <div key={chapter.id}>
           {/* Log the extracted values for debugging */}
-          <Link
+          <Links
             key={chapter.id}
             to={`/read/manga/comick/chapter/${chapter.chapterId}`}
             onClick={() => handleLinkClick(chapter)}
             state={{ slug: `${slug}` }}
           >
             Chapter {chapter.number}
-          </Link>
+          </Links>
         </div>
       </StyledLi>
     ))}
@@ -369,20 +412,45 @@ const response = await axios.get(`https://manga-roan-one.vercel.app/manga/comick
        </div>
   );
 }
+
+const Links = styled(Link)`
+  text-decoration: none;
+  color: white;
+     font-weight: bold;
+
+   
+   
+    :hover{
+    color:#8bbadd;
+   }
+  
+`;
+
+const Option = styled.option`
+   
+`;
+
+const ArrowUp = styled.div`
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 20px solid #fff;
+`;
 const ScrollToTopButton = styled.button`
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #007bff;
+   background-color: #182335;
   color: white;
   border: none;
   border-radius: 5px;
-  padding: 10px 20px;
+  padding: 14px 17px;
   cursor: pointer;
   z-index: 9999;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #8bbadd;
   }
 `;
 const HomeDiv = styled.div`
@@ -423,7 +491,7 @@ const YAWA = styled.div`
 `;
 
 const StyledModal = styled(Modal)`
- background-color: #fff;
+ background-color: #182335;
  max-width: 900px;
    margin: auto; /* Center the modal content horizontally */
   `;
@@ -449,18 +517,26 @@ const GAGO = styled.button`
     font-weight: bold;
     letter-spacing: 2px;
     text-transform: uppercase;
-      white-space: nowrap;
-     left: 0;
+      left: 0;
      text-decoration: none;
      padding: 15px 20px;
     transition: 0.3s;
     opacity: 1;
     margin-right: 5px;
-    cursor: pointer;
+            margin-left: 5px;
+
+       background-color: #182335;
+   outline: none;
+   border: none;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  color: #ffffff;
+   font-family: 'Gilroy-Medium', sans-serif;
  
-   
+    
     &:hover {
-background: rgb(28, 31, 30);    
+background: #8bbadd;    
 color: #fff;  
     }
     @media screen and (max-width: 600px) {
@@ -480,6 +556,11 @@ const GAGO2 = styled.button`
     transition: 0.3s;
     opacity: 1;
     margin-right: 5px;
+    margin-left: 5px;
+        background-color: #182335;
+   outline: none;
+   border: none;
+
     cursor: pointer;
       overflow: hidden;
   text-overflow: ellipsis;
@@ -487,12 +568,17 @@ const GAGO2 = styled.button`
 
    
     &:hover {
-background: rgb(28, 31, 30);    
+background:#8bbadd;    
 color: #fff;  
     }
     @media screen and (max-width: 600px) {
    margin-right: 0;
       width: 375px; 
+
+  }
+   @media screen and (max-width: 500px) {
+   margin-right: 0;
+      width: 345px; 
 
   }
   
@@ -515,18 +601,19 @@ const Chapters = styled.div`
   }
 `;
 const Dropdown = styled.select`
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-      white-space: nowrap;
-     left: 0;
-     text-decoration: none;
-     padding: 15px 20px;
-    transition: 0.3s;
-    opacity: 1;
-    margin-right: 5px;
-    cursor: pointer;
+  outline: none;
+  background: #182335;
+  border: none;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  color: #ffffff;
+   padding: 0.8rem;
+  font-family: 'Gilroy-Medium', sans-serif;
+  font-size: 0.9rem;
+  border-radius: 0.4rem;
+  transition: 0.2s;
+   align-items: center;
  
    
 `;

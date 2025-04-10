@@ -82,14 +82,13 @@ function Nav() {
                 </div>
                 
                             <div className={menu_class}>
-                             <Links to="/trending/1 ">Trending</Links>
-          <Links to="/popular/1">Popular</Links>
-                              <Links to="/hot/1">Schedule Anime</Links>
+                                      <Links to="/top/1">Top</Links>
+                                               <Links to="/news/1">News</Links>
+                                          <Links to="/rank/1">Recent Ranking</Links>
+                                            <Links to="/hot/1">Hot Updates</Links>
+                                                   <Links to="/new/1">Latest Updates</Links>
 
-                    <Links to="/recent/1">Recent Anime</Links>
-                                    <Links to="/animechart/1">Anime Chart</Links>
-<Type/>
-                                <Genre/> 
+                                                                 <Filter to="/try/1">Filter</Filter>
                             </div>
                             </IconContext.Provider>
                              )}
@@ -119,9 +118,14 @@ function Nav() {
          
         <div className="nav-links">
  
-                             <Genre/> 
-                                                                 <Links to="/top/1">Schedule Anime</Links>
-                                                                 <Links to="/try/1">Try Anime</Links>
+                                                                  <Links to="/top/1">Top</Links>
+                                               <Links to="/news/1">News</Links>
+                                          <Links to="/rank/1">Recent Ranking</Links>
+                                            <Links to="/hot/1">Hot Updates</Links>
+                                                   <Links to="/new/1">Latest Updates</Links>
+
+                                                                 <Filter to="/try/1">Filter</Filter>
+
 
         </div>
         
@@ -174,12 +178,28 @@ const Shadow = styled.div`
   background-color: rgba(0, 0, 0, 0.6);
   overflow: hidden;
 `;
+const Filter = styled(Link)`
+ color: white;
+  font-family: "Lexend", sans-serif;
+  font-weight: 500;
+  background-color: #182335;
+  outline: none;
+  border: none;
+    text-decoration: none;
+  padding: 0.7rem 1.6rem 0.7rem 1.6rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  FiSearch {
+    font-size: 1rem;
+  }
 
+`;
 const Button = styled.button`
   color: white;
   font-family: "Lexend", sans-serif;
   font-weight: 500;
-  background-color: #DB202C;
+  background-color: #182335;
   outline: none;
   border: none;
   padding: 0.7rem 1.6rem 0.7rem 1.6rem;

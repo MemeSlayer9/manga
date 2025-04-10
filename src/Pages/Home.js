@@ -19,10 +19,10 @@ function Home() {
   return (
     <div> 
     
-    
-        <HomeDiv>
-        <Top/> 
+            <Top/> 
 
+        <HomeDiv>
+ 
              <Hot/>
          <Latest/>
 
@@ -33,7 +33,7 @@ function Home() {
 
 
 const HomeDiv = styled.div`
-  margin: 1.5rem 5rem 1rem 5rem;
+  margin: 1.5rem 1rem 1rem 1rem;
   @media screen and (max-width: 600px) {
     margin: 1rem 1rem 0rem 1rem;
   }

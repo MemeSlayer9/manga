@@ -1,47 +1,44 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-   import TopPageSkeleton from "../components/skeletons/TopPageSkeleton";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Scrollbar, A11y, Autoplay } from "swiper";
+import AnimeCardsSkeleton from "../../components/skeletons/AnimeCardsSkeleton";
+      import { idToData, idToImageUrl, idToImageUrl2, idToid } from '../../providers/imageMappings'; // Update the import path as needed
+
+import "swiper/css";
+import "swiper/css/scrollbar";
+import useWindowDimensions from "../../hooks/useWindowDimensions";
+import "swiper/css/navigation";
 
 function AnimeCards() {
-      let { name } = useParams();
-      const [query, setQuery] = useState(name);
-
+  
   const [loading, setLoading] = useState(true);
    const [anime, setAnime] = useState({});
-    const [comic_types, setComicTypes] = useState('all'); // Initialize as 'all'
 
-   const [searchQuery, setSearchQuery] = useState('');
+   const { height, width } = useWindowDimensions();
+
+  const updatedImageUrl = {
+  ...idToid,
+ };
+
+
+
 
  
- const Types = [
-      { value: "all", label: "All" },
-      { value: "manga", label: "Manga" },
-      { value: "manhwa", label: "manhwa" },
-      { value: "manhua", label: "manhua" },
-    ];
-
-
-    const handleTypeChange  = (e) => {
-      setComicTypes(e.target.value);
-    };
-  const filteredAnime = anime.results?.filter((item) =>
-  item.title.toLowerCase().includes(searchQuery.toLowerCase())
-);
-
- 
+  
 const getAnime = async (id = 1) => {
   try {
     setLoading(true);
-    
-       const { data } = await axios.get(`https://manga2-six.vercel.app/manga/comick/filter?search=${query}&limit=50`);
+    const response = await axios.get(
+      `https://manga2-six.vercel.app/manga/comick/top`
+    );
 
-
-     // Check if the response data contains the expected structure
-    if (data && Array.isArray(data.results)) {
-      const mangaList = data.results;
+    // Check if the response data contains the expected structure
+    if (response.data && Array.isArray(response.data.results)) {
+      const mangaList = response.data.results;
 
       // Iterate over each manga in the list and fetch additional details
       const mangaWithDetails = await Promise.all(
@@ -70,36 +67,68 @@ const getAnime = async (id = 1) => {
       setAnime({ results: mangaWithDetails });
       setLoading(false);
     } else {
-      console.error('Response data does not contain the expected structure:', data);
+      console.error('Response data does not contain the expected structure:', response.data);
       setLoading(false);
     }
   } catch (err) {
     console.error(err);
     setLoading(false);
   }
-  
 };
 
+  
+  
 
- 
   
     useEffect(() => {
          getAnime();
-    setQuery(name);
-    
 
-   }, [comic_types, name, query]);
+   }, []);
 
   return (
     <div>
-       {loading && <TopPageSkeleton name="" />}
-        {!loading && (
 
-                <HomeDiv>
- 
-          
-  {filteredAnime.map((item, index) => (
-       <Wrapper   className="projcard projcard-blue">
+    <HomeDiv> 
+      {loading && <AnimeCardsSkeleton />}
+      {!loading && (
+        <Swiper
+          slidesPerView={3}
+          spaceBetween={35}
+         loop={true}
+        navigation={true}
+        autoplay={{
+          delay: 4000000,
+          disableOnInteraction: false,
+        }}
+          breakpoints={{
+            "@0.00": {
+              slidesPerView: 1,
+              spaceBetween: 15,
+            },
+            "@0.75": {
+              slidesPerView: 1,
+              spaceBetween: 20,
+            },
+           
+              "@1.25": {
+              slidesPerView: 2,
+              spaceBetween: 35,
+            },
+             
+           
+           
+            "@2.00": {
+              slidesPerView: 3,
+              spaceBetween: 40,
+            },
+          }}
+          modules={[Scrollbar, Navigation, Autoplay]}
+          className="mySwiper"
+        >
+        
+{anime.results?.map(item => (
+  <SwiperSlide key={updatedImageUrl[item.id] || item.id}>
+    <Wrapper   className="projcard projcard-blue">
  
         <div className="yawa">
                  <div className="projcard-innerbox">
@@ -142,55 +171,24 @@ const getAnime = async (id = 1) => {
          
       </div>
     </Wrapper>
-    ))}
+  </SwiperSlide>
+))}
         
+        
+        </Swiper>
+      )}
+      
         
         </HomeDiv>
-                            )}
-
     </div>
   );
 }
 
 const HomeDiv = styled.div`
-    margin: 1.5rem 5rem 1rem 5rem;
-        @media screen and (max-width: 1200px) {
-      margin: 1rem 1rem 0rem 1rem;
-    }
-  `;
- const Heading = styled.p`
-    font-size: 1.8rem;
-    color: white;
-    font-weight: 200;
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: space-between;
-    span {
-      font-weight: 600;
-    }
+ 
+    margin-Top: 20px;
 
-    @media screen and (max-width: 600px) {
-      font-size: 1.6rem;
-      margin-bottom: 1rem;
-    }
-  `;
-  const Dropdown = styled.select`
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-        white-space: nowrap;
-      left: 0;
-      text-decoration: none;
-      padding: 15px 20px;
-      transition: 0.3s;
-      opacity: 1;
-      margin-right: 5px;
-      cursor: pointer;
-  
-    
-  `;
-
+`;
 const Wrapper = styled.div`
   height:300px;
   width: 100%;
@@ -229,7 +227,8 @@ const Wrapper = styled.div`
   .projcard-img {
         flex-shrink:0;
         width:10.8rem;
-         position:relative;
+         
+        position:relative;
         border-radius:0;
          transition:transform .2s,opacity .2s;
         opacity:.6
@@ -260,16 +259,6 @@ const Wrapper = styled.div`
     color: #fff;
     
    }
-       @media screen and (max-width: 500px) {
-     .projcard-title {
-        
-          white-space: nowrap; 
-  width: 150px; 
-  overflow: hidden;
-  text-overflow: ellipsis; 
-       
-       }
-    }
      
   .projcard-subtitle {
     font-family: 'Voces', 'Open Sans', arial, sans-serif;
@@ -277,12 +266,13 @@ const Wrapper = styled.div`
   }
 `;
 
+
 const Links = styled(Link)`
   text-decoration: none;
   color: white;
-    :hover{
-    color:#FFFF66;
-  }
+    font-size: 1.2rem;
+    font-weight: bold;
+
    
    img {
     width: 160px;
@@ -308,4 +298,5 @@ const Links = styled(Link)`
   }
   
 `;
+
 export default AnimeCards;

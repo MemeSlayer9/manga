@@ -34,9 +34,9 @@ const getAnime = async (id = 1) => {
     setLoading(true);
      let url;
         if (comic_types === 'all') {
-          url = `https://manga-roan-one.vercel.app/manga/comick/top?`;
+          url = `https://manga2-six.vercel.app/manga/comick/top?`;
         } else {
-          url = `https://manga-roan-one.vercel.app/manga/comick/top?comic_types=${comic_types}`;
+          url = `https://manga2-six.vercel.app/manga/comick/top?comic_types=${comic_types}`;
         }
        const { data } = await axios.get(url);
 
@@ -113,29 +113,35 @@ const getAnime = async (id = 1) => {
       />
             </Heading>
    {filteredAnime.map((item, index) => (
-    <Wrapper key={index} className="projcard projcard-blue">
-      <div className="projcard-innerbox">
+      <Wrapper   className="projcard projcard-blue">
+ 
+        <div className="yawa">
+                 <div className="projcard-innerbox">
         <Links to={`/id/${item.id}`}>
           <img src={item.thumbnail.url} className="projcard-img card-img" />
         </Links>
-        <div className="yawa">
-          <div className="projcard-title">
+          
+        </div>
+        <div className="gondar"> 
+        
+           <div className="projcard-title">
+           
             <Links to={`/id/${item.id}`}>
               {item.title}
             </Links>
           </div>
           <div className="projcard-subtitle">
-            <span>
+            <p>
               {item.mangaDetails?.status
                 ? item.mangaDetails.status.charAt(0).toUpperCase() +
                   item.mangaDetails.status.slice(1)
                 : 'Unknown'}
-            </span>
-            <span> | Author: </span>
-            {item.mangaDetails?.authors ? item.mangaDetails.authors[0] : 'Unknown'}
+            </p>
+           
+            <span> Author: {item.mangaDetails?.authors ? item.mangaDetails.authors[0] : 'Unknown'}</span> 
           </div>
           <div className="projcard-description">
-            Genres: {item.mangaDetails?.genres ? item.mangaDetails.genres.slice(0, 3).join(', ') : 'Unknown'}
+           {item.mangaDetails?.genres ? item.mangaDetails.genres.slice(0, 3).join(', ') : 'Unknown'}
           </div>
           {item.mangaDetails?.chapters &&
           item.mangaDetails.chapters.length > 0 && (
@@ -146,8 +152,8 @@ const getAnime = async (id = 1) => {
               <p className="projcard-description">Chapter {item.mangaDetails.chapters[0].number}</p>
             </Links>
           )}
-          
-        </div>
+          </div>
+         
       </div>
     </Wrapper>
   ))}
@@ -200,92 +206,63 @@ const HomeDiv = styled.div`
   `;
 
 const Wrapper = styled.div`
-  position: relative;
+  height:300px;
   width: 100%;
-  height: 300px;
-  margin-bottom: 40px;
-  border-radius: 10px;
-    background: #2f2f2f;
-   font-size: 18px;
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: 0 4px 21px -12px rgba(0, 0, 0, 0.66);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
 
-  :hover {
-    box-shadow: 0 34px 32px -33px rgba(0, 0, 0, 0.18);
-    transform: translate(0px, -3px);
-  }
-
-  ::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-image: linear-gradient(-70deg, #424242, transparent 50%);
-    opacity: 0.07;
-  }
-
-  .projcard-innerbox {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-  }
+   .yawa{
+     display:flex;
+    border-radius:.5rem;
+    position:relative;
+    transition:border .3s,background .3s,box-shadow .3s;
+  background: #182335;
+    border:0;
+    margin:.7rem;
+    overflow:hidden;
+    border:1px solid #1e2c43;
+    cursor:pointer
+   }
+   .yawa:before{
+     position:absolute;
+    content:"";
+    display:block;
+    width:.2rem;
+    top:0;
+    height:100%;
+    background:#8bbadd
+   }
+ .gondar{
+  padding:1.5rem;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    position:relative;
+    width:100%;
+    overflow:hidden
+ }
 
   .projcard-img {
-    position: absolute;
-    width: 200px;
-    height: 300px;
-    top: 0;
-    left: 0;
-    transition: transform 0.2s ease;
+        flex-shrink:0;
+        width:10.8rem;
+         position:relative;
+        border-radius:0;
+         transition:transform .2s,opacity .2s;
+        opacity:.6
   }
 
   :hover .projcard-img {
-    transform: scale(1.05) rotate(1deg);
-  }
+    transform: scale(1.05) rotate(3deg);
 
-  .yawa {
-    position: absolute;
-    top: 7%;
-    bottom: 7%;
-    left: 210px;
-     font-size: 17px;
-  }
-   @media screen and (max-width: 600px) {
-     .yawa{
-    left: 210px;
+     
+    opacity:1
+   }
 
-     }
+   @media screen and (max-width: 500px) {
+     .projcard-img {
+        
+        width:8.8rem;
+      
+       }
     }
-
-  .projcard-description {
-    z-index: 10;
-    font-size: 15px;
-    color: #fff;
-     overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .projcard-tagbox button {
-    bottom: 3%;
-    font-size: 25px;
-    cursor: default;
-    user-select: none;
-    padding: 10px 20px;
-    border-radius: 25px;
-    text-decoration: none;
-    border: none;
-    outline: none;
-    background: purple;
-    box-shadow: 0 4px 21px -12px rgba(0, 0, 0, 0.66);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-  }
-
   .projcard-tagbox a {
     text-decoration: none;
     color: #ddd;
@@ -295,8 +272,19 @@ const Wrapper = styled.div`
     font-family: 'Voces', 'Open Sans', arial, sans-serif;
     font-size: 24px;
     color: #fff;
-  }
-
+    
+   }
+       @media screen and (max-width: 500px) {
+     .projcard-title {
+        
+          white-space: nowrap; 
+  width: 150px; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+       
+       }
+    }
+     
   .projcard-subtitle {
     font-family: 'Voces', 'Open Sans', arial, sans-serif;
     color: #fff;

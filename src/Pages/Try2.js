@@ -83,7 +83,7 @@ const YourComponent = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const baseUrl = 'https://manga-roan-one.vercel.app/manga/comick/filter';
+      const baseUrl = 'https://manga2-six.vercel.app/manga/comick/filter';
       let url = `${baseUrl}?page=${page}&limit=50`;
 
        console.log('Sort:', sort);      // Debugging sort
@@ -160,10 +160,15 @@ const YourComponent = () => {
             {filteredAnime.map((item) => (
               <Wrapper key={item.id}>
                 <Links to={`/id/${item.slug}`}>
-                                   <TONG>{countryLabelMap[item.country] || item.country}</TONG>
+                                   <TONG>
+                                   <p> {countryLabelMap[item.country] || item.country}
+                                   </p>
+                                   </TONG>
 
                   <img src={item.thumbnail.url} alt={item.title} className='card-img' />
+                  <TONG2> 
                    <p>{item.title}</p>
+                   </TONG2>
                   </Links>
               </Wrapper>
             ))}
@@ -181,121 +186,45 @@ const YourComponent = () => {
 const Wrapper = styled.div`
   border-radius: 0.5rem;
   
-
-  img {
-    width: 160px;
-    height: 235px;
-    border-radius: 0.5rem;
-    margin-bottom: 0.3rem;
-    object-fit: cover;
-    @media screen and (max-width: 600px) {
-      width: 120px;
-      height: 180px;
-    }
-    @media screen and (max-width: 400px) {
-      width: 100px;
-      height: 160px;
-    }
-  }
+ 
 
   p {
     color: white;
     font-size: 1rem;
     font-weight: 400;
     text-align: center;
-  }
+   }
 `;
 
-const TONG = styled.p`
-position: absolute;
- overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 100%;
-       background: rgba(0, 0, 0, 0.8);
-      
-       
-  @media screen and (max-width: 600px) {
-         width: 100% !important;
-
-    }
-`;
-const TONG2 = styled.p`
-position: absolute;
- overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    
-    width: 100%;
-       background: rgba(0, 0, 0, 0.8);
-     margin-top: -45px;      
-       &:hover {
-          border-radius: 0.5rem;
-
-      background-color: #FFFF66; /* Change the background color on hover */
-      color: black !important;
-    }
-  @media screen and (max-width: 600px) {
-         width: 100% !important;
-
-    }
-`;
- const HomeDiv = styled.div`
-    margin: 1.5rem 5rem 1rem 5rem;
-        @media screen and (max-width: 1200px) {
-      margin: 1rem 1rem 0rem 1rem;
-    }
-  `;
- const Dropdown = styled.select`
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-        white-space: nowrap;
-      left: 0;
-      text-decoration: none;
-      padding: 15px 20px;
-      transition: 0.3s;
-      opacity: 1;
-      margin-right: 5px;
-      cursor: pointer;
-  
-    
-  `;
-  const Filter = styled.div`
+ const Filter = styled.div`
    display: grid;
     grid-template-columns: repeat(auto-fill, 160px);
     grid-gap: 1rem;
     grid-row-gap: 1.5rem;
     justify-content: space-between;
+    margin-top: 20px;
 
-    @media screen and (max-width: 1200px) {
-      grid-template-columns: repeat(auto-fill, 220px);
-      grid-gap: 0rem;
-      grid-row-gap: 1.5rem;
+      @media (min-width: 768px) {
+    ul {
+      grid-template-columns: repeat(3, 1fr); /* Two items in a row on screens wider than 768px */
     }
-    @media screen and (max-width: 700px) {
-      grid-template-columns: repeat(auto-fill, 180px);
-      grid-gap: 0rem;
-      grid-row-gap: 1.5rem;
-    }
-    @media screen and (max-width: 600px) {
-      grid-template-columns: repeat(auto-fill, 150px);
-      grid-gap: 0rem;
-      grid-row-gap: 1.5rem;
-    }
+  }
+  
+  
 
-    @media screen and (max-width: 400px) {
-      grid-template-columns: repeat(auto-fill, 160px);
-      grid-gap: 0rem;
-      grid-row-gap: 1.5rem;
-    }
-
-    @media screen and (max-width: 380px) {
-      grid-template-columns: repeat(auto-fill, 100px);
-      grid-gap: 0rem;
-      grid-row-gap: 1.5rem;
-    }
+ 
+     @media (max-width: 780px) {
+    grid-template-columns: repeat(3, 1fr); 
+      
+   }
+       @media (max-width: 400px) {
+    grid-template-columns: repeat(2, 1fr); 
+      
+   }
+     @media (max-width: 400px) {
+    grid-template-columns: repeat(2, 1fr); 
+      
+   }
     img {
       width: 180px;
       height: 250px;
@@ -307,7 +236,7 @@ position: absolute;
         height: 235px;
       }
       @media screen and (max-width: 400px) {
-        width: 170px;
+        width: 160px;
         height: 250px;
       }
     }
@@ -316,9 +245,115 @@ position: absolute;
       font-size: 1rem;
       font-weight: 400;
     }
+`;
+const TONG = styled.div`
+position: absolute;
+ overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 11.9%!important;
+       background: rgba(0, 0, 0, 0.8);
+      
+       
+ @media (max-width: 1200px) {
+      width: 16% !important; /* Adjust the width for smaller screens */
+    }
+      @media (max-width: 1000px) {
+      width: 17% !important; /* Adjust the width for smaller screens */
+    }
 
-  
+
+  @media (max-width: 800px) {
+      width: 25%!important; /* Adjust the width for even smaller screens */
+    }
+    @media (max-width: 700px) {
+      width: 30%!important; /* Adjust the width for even smaller screens */
+    }
+    @media (max-width: 600px) {
+      width: 25%!important; /* Adjust the width for even smaller screens */
+    }
+      @media (max-width: 500px) {
+      width: 28%!important; /* Adjust the width for even smaller screens */
+    }
+      @media (max-width: 400px) {
+      width: 44%!important; /* Adjust the width for even smaller screens */
+    }
+`;
+const TONG2 = styled.div`
+ position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    transition: 0.5s ease;
+    color: white;
+    width: 11.9%!important;
+    font-size: 14px;
+    text-align: center;
+        border-radius: 0.5rem;
+      margin-bottom: 0.3rem;
+
+    margin-top: -57px;
+
+    &:hover {
+      background-color: #FFFF66; /* Change the background color on hover */
+      color: black !important;
+    }
+    p {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 100%;
+         margin-top: 9px;
+        margin-bottom: 22px;
+    }
+
+    
+    @media (max-width: 1200px) {
+      width: 16% !important; /* Adjust the width for smaller screens */
+    }
+      @media (max-width: 1000px) {
+      width: 17% !important; /* Adjust the width for smaller screens */
+    }
+
+
+  @media (max-width: 800px) {
+      width: 25%!important; /* Adjust the width for even smaller screens */
+    }
+    @media (max-width: 700px) {
+      width: 30%!important; /* Adjust the width for even smaller screens */
+    }
+    @media (max-width: 600px) {
+      width: 25%!important; /* Adjust the width for even smaller screens */
+    }
+      @media (max-width: 500px) {
+      width: 28%!important; /* Adjust the width for even smaller screens */
+    }
+      @media (max-width: 400px) {
+      width: 44%!important; /* Adjust the width for even smaller screens */
+    }
+`;
+ const HomeDiv = styled.div`
+    margin: 1.5rem 5rem 1rem 5rem;
+        @media screen and (max-width: 1200px) {
+      margin: 1rem 1rem 0rem 1rem;
+    }
   `;
+ const Dropdown = styled.select`
+      outline: none;
+  background: #404040;
+  border: none;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  color: #ffffff;
+  background-color: #242235;
+  padding: 0.8rem;
+  font-family: 'Gilroy-Medium', sans-serif;
+  font-size: 0.9rem;
+  border-radius: 0.4rem;
+  transition: 0.2s;
+   align-items: center;
+    
+  `;
+ 
    const Heading = styled.p`
     font-size: 1.8rem;
     color: white;
@@ -341,14 +376,7 @@ position: absolute;
   const Links = styled(Link)`
   text-decoration: none;
 
-   
-   img {
-    width: 160px;
-    height: 235px;
-    border-radius: 0.5rem;
-    object-fit: cover;
     
-  }
 
   p {
     color: white;

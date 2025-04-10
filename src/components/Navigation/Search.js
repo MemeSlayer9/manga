@@ -104,7 +104,7 @@ function Search({ isActive, setIsActive }) {
             </SearchButton>
           )}
           {query === "" && <button>Search</button>}
-        </div>
+         </div>
       </Content>
     </Wrapper>
   );
@@ -170,7 +170,7 @@ const Content = styled.div`
   button {
     outline: none;
     border: none;
-    background-color: #DB202C;
+    background-color: #182335;
     color: white;
     font-size: 1rem;
     padding: 0.9rem 2rem;

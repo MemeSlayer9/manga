@@ -22,6 +22,13 @@ const ProviderSelector = ({ providerIds, onSelect }) => (
   </select>
 );
 
+    const countryLabelMap = {
+    kr: "MANWHA",
+    jp: "MANGA",
+    cn: "MANHUA"
+  };
+
+
  const handleRecommendationClick = (recommendations) => {
     setIsLoading(true); // Set loading state to true when the link is clicked
 
@@ -32,15 +39,13 @@ const ProviderSelector = ({ providerIds, onSelect }) => (
 
     }, 500); // Adjust the delay as needed
   };
-const formatDate = (dateObj) => {
-  const { year, month, day } = dateObj;
-  const formattedDate = new Date(year, month - 1, day).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-  return formattedDate;
+const formatDate = ({ year, month, day }) => {
+    // Adjust month to be 0-indexed (i.e., January is 0)
+    const date = new Date(year, month - 1, day);
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString(undefined, options);
 };
+  
 
  
   const handleShowMore = () => {
@@ -100,10 +105,21 @@ const formatDate = (dateObj) => {
       <div> 
         
     <h1>{item.title}</h1>
+    <p className="green capSize noMargin" align="center">
+                <span> Rank: </span>{item.follow_rank}
+                </p>
+                 <p className="green capSize noMargin" align="center">
+                <span> Type: </span>{countryLabelMap[item.country] || item.country}
+                </p>
  <p className="green capSize noMargin" align="center">
-  <span>Author: </span>{item.authors ? item.authors.join(', ') : 'Unknown'}
+<span>Author: </span>
+
+{item.authors && item.authors.length > 0 ? item.authors.map(author => author.name).join(', ') : 'Unknown'}
 </p>
 
+<p className="green capSize noMargin" align="center">
+                <span> Year: </span>{item.year}
+                </p>
          <p className="green capSize noMargin" align="center">
   <span>Genres: </span>{item.genres ? item.genres.join(", ") : 'Unknown'}
 </p>
@@ -134,7 +150,7 @@ const formatDate = (dateObj) => {
                                                  state={{ slug: `${slug}` }}>
                       <OGAG> 
                            <p>Chapter {chapter.number}</p>
-                  <p>{formatDate(chapter.date)}</p>
+<p>{formatDate(chapter.date)}</p>
             </OGAG>
             </Links>
          </li>
@@ -208,11 +224,11 @@ position: relative;
     width: 100%;
     height: 100%;
     
-       background: linear-gradient(to right, rgba(22, 22, 22, -0.7) 90%, rgba(22, 22, 22, 1.3) 100%, #161616 100%),
-                       linear-gradient(to top, rgba(22, 22, 22, -0.7) 90%, rgba(22, 22, 22, 1.3) 100%, #161616 100%),
+       background: linear-gradient(to right, rgba(22, 22, 22, -0.7) 90%, rgb(14, 23, 38) 100%, #161616 100%),
+                       linear-gradient(to top, rgba(22, 22, 22, -0.7) 90%, rgb(14, 23, 38) 100%, #161616 100%),
 
-                linear-gradient(to bottom, rgba(22, 22, 22, -0.7) 60%, rgba(22, 22, 22, 1.3) 100%, #161616 100%),
-                linear-gradient(to left, rgba(22, 22, 22, -0.7) 90%, rgba(22, 22, 22, 1.3) 100%, #161616 100%);
+                linear-gradient(to bottom, rgba(22, 22, 22, -0.7) 60%, rgb(14, 23, 38) 100%, #161616 100%),
+                linear-gradient(to left, rgba(22, 22, 22, -0.7) 90%, rgb(14, 23, 38) 100%, #161616 100%);
 
               
     /* Add left, right, and top gradients */
@@ -353,7 +369,7 @@ display: none;
 const Chapters = styled.ul`
    list-style: none;
  display: flex;
-     background: #2f2f2f;
+     background: #182335;
 border: 1px solid rgba(0, 0, 0, .125);
  overflow: auto;
     max-height: 500px;
@@ -396,33 +412,27 @@ const Recommendation = styled.div`
     justify-content: space-between;
     margin-top: 20px;
 
-    @media screen and (max-width: 1200px) {
-      grid-template-columns: repeat(auto-fill, 220px);
-      grid-gap: 0rem;
-      grid-row-gap: 1.5rem;
+      @media (min-width: 768px) {
+    ul {
+      grid-template-columns: repeat(3, 1fr); /* Two items in a row on screens wider than 768px */
     }
-    @media screen and (max-width: 700px) {
-      grid-template-columns: repeat(auto-fill, 180px);
-      grid-gap: 0rem;
-      grid-row-gap: 1.5rem;
-    }
-    @media screen and (max-width: 600px) {
-      grid-template-columns: repeat(auto-fill, 150px);
-      grid-gap: 0rem;
-      grid-row-gap: 1.5rem;
-    }
+  }
+  
+  
 
-    @media screen and (max-width: 400px) {
-      grid-template-columns: repeat(auto-fill, 160px);
-      grid-gap: 0rem;
-      grid-row-gap: 1.5rem;
-    }
-
-    @media screen and (max-width: 380px) {
-      grid-template-columns: repeat(auto-fill, 100px);
-      grid-gap: 0rem;
-      grid-row-gap: 1.5rem;
-    }
+ 
+     @media (max-width: 780px) {
+    grid-template-columns: repeat(3, 1fr); 
+      
+   }
+       @media (max-width: 400px) {
+    grid-template-columns: repeat(2, 1fr); 
+      
+   }
+     @media (max-width: 400px) {
+    grid-template-columns: repeat(2, 1fr); 
+      
+   }
     img {
       width: 180px;
       height: 250px;
@@ -434,7 +444,7 @@ const Recommendation = styled.div`
         height: 235px;
       }
       @media screen and (max-width: 400px) {
-        width: 170px;
+        width: 160px;
         height: 250px;
       }
     }

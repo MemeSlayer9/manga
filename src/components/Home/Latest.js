@@ -9,12 +9,17 @@ function Home() {
     const [manga, setManga] = useState([]);
 const [page, setPage] = useState(1);
 
- 
+     const countryLabelMap = {
+    kr: "Manwha",
+    jp: "Manga",
+    cn: "Manhua"
+    
+  };
 const getManga = async (page = 1) => {
   try {
     setLoading(true);
     const { data } = await axios.get(
-      `https://manga-roan-one.vercel.app/manga/comick/latest?&page=${page}&order=new`
+      `https://manga-api-bice.vercel.app/manga/comick/latest?&page=${page}&order=new`
     );
     setManga(data);
     setLoading(false);
@@ -24,7 +29,23 @@ const getManga = async (page = 1) => {
    }
 };
  
+const timeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const difference = now - date;
 
+    const minutes = Math.floor(difference / 1000 / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+      return `${days} day${days > 1 ? 's' : ''} ago`;
+    } else if (hours > 0) {
+      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    } else {
+      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    }
+  };
      
 const handlePrevPage = () => {
   if (page > 1) {
@@ -51,23 +72,27 @@ useEffect(() => {
                    </BoxHeader>
     <New>
         {manga.results && manga.results.map(item =>(
-          <div key={item.id}>
+          <div key={item.id} className="gago">
     <Link key={item.id} to={`/id/${item.slug}`}>
               <img src={item.thumbnail.url}/>
  
                       </Link>
                           <div className="yawa"> 
+                                           <p className="country"> {countryLabelMap[item.country] || item.country}
+                                   </p>
+
                               <Links key={item.id} to={`/id/${item.id}`}>
 
-                                     <p>{item.title}</p>
+                                     <p className="title">{item.title}</p>
                                      </Links>
                                         <Links to={`/read/manga/comick/chapter/${item.chapterId}`}
                                                  state={{ slug: `${item.slug}` }}
->
-                                                         
+> 
+                                                    <div className="content">       
+                                           <p className="chap">Chapter {item.chap}</p>
+                                                                     <p className="time">{timeAgo(item.created_at)}</p> {/* Displaying time only */}
+                                                                     </div>
 
-                                          <p>Chapter {item.chap}</p>
-                                           
           </Links>
                           </div>
                      </div>
@@ -82,52 +107,78 @@ useEffect(() => {
 
 const HomeDiv = styled.div`
   margin: 1.5rem 5rem 1rem 5rem;
-    background: #2f2f2f;
-  border-radius: 0.5rem;
-
-
+   border-radius: 0.5rem;
+ 
      @media screen and (max-width: 1200px) {
-    margin: 1rem 1rem 0rem 1rem;
+    margin: 0;
   }
 `;
 const New = styled.div`
-   position: relative;
- 
-display: flex;
-    align-items: center;
-  margin-bottom: 16px;  
-    flex-wrap: wrap;
-      margin-left: 20px;
-
-   div {
-      width: 50%;
-      margin-top: 5px;
- 
-   }
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1rem;
+    grid-row-gap: 1.5rem;
+    justify-content: space-between;
+    margin-top: 20px;
 
   
+  
+  
 
-  img {
-    width: 140px;
-    height: 200px;
-     border-radius: 0.5rem;
-
-  object-fit: cover;
-  }
-  .yawa{
- width: calc(100% - 148px);
-    float: right;
-    position: relative;
-       
-     
-  }
-     @media screen and (max-width: 768px) {
-    div {
-      width: 100%;
-    }
+ 
+     @media (max-width: 850px) {
+    grid-template-columns: repeat(1, 1fr); 
+      
+   }
     
-     
-     }
+   .gago{
+    display: flex;
+    border: 1px solid #1e2c43;
+    border-radius: .5rem;
+    transition: background .3s, border .3s;
+    flex-grow: 1;
+background: #182335;
+    }
+   
+    
+  
+    
+   .yawa{
+    margin-left: 20px;
+   }
+   .content{
+    margin: 1rem 0 0 0;
+    padding: 0;
+    
+    
+   }
+   .country{
+    color: #3c8bc6;
+    margin-top: 20px;
+   }
+   .title{
+ margin-top: 2px;
+   }
+    
+    img {
+      width: 180px;
+      height: 100%;
+      border-radius: 0.5rem;
+      margin-bottom: 0.3rem;
+      object-fit: cover;
+      @media screen and (max-width: 600px) {
+        width: 130px;
+       }
+      @media screen and (max-width: 400px) {
+        width: 160px;
+       }
+    }
+
+    p {
+      font-size: 1rem;
+      font-weight: 400;
+      
+    }
 `;
 
 const ItemHead = styled.div`
@@ -144,7 +195,7 @@ const ItemHead = styled.div`
   margin-top: -80px;
 
    &:hover {
-    background-color: #FFFF66; /* Change the background color on hover */
+    background-color: #3c8bc6; /* Change the background color on hover */
     color: black;
   }
   p {
@@ -171,8 +222,7 @@ const ItemHead = styled.div`
 const BoxHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  background:   linear-gradient(0deg, rgba(79, 79, 79, 0) 0, #4f4f4f 100%);
-
+ 
     padding: 10px 15px;
     color: #fff;
     font-size: 18px;
@@ -191,18 +241,16 @@ const BoxHeader = styled.div`
 `;
 
 const Links = styled(Link)`
-   display: -webkit-box;
-    -webkit-line-clamp: 2;
+    
     -webkit-box-orient: vertical;
     color: #fff;
     text-decoration: none;
       font-size: 12px;
     font-weight: 700;
     letter-spacing: 2px;
-    overflow: hidden;
-  
+   
     :hover{
-    color:#FFFF66;
+    color:#3c8bc6;
     font-weight: bold;
   }
   @media screen and (max-width: 600px) {

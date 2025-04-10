@@ -1,14 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
    import TopPageSkeleton from "../components/skeletons/TopPageSkeleton";
 
 function AnimeCards() {
-      let { name } = useParams();
-      const [query, setQuery] = useState(name);
-
+  
   const [loading, setLoading] = useState(true);
    const [anime, setAnime] = useState({});
     const [comic_types, setComicTypes] = useState('all'); // Initialize as 'all'
@@ -31,15 +29,20 @@ function AnimeCards() {
   item.title.toLowerCase().includes(searchQuery.toLowerCase())
 );
 
- 
 const getAnime = async (id = 1) => {
   try {
     setLoading(true);
-    
-       const { data } = await axios.get(`https://manga2-six.vercel.app/manga/comick/filter?search=${query}&limit=50`);
+     let url;
+        if (comic_types === 'all') {
+          url = `https://manga-api.vercel.app/manga/comick/recentrank?`;
+        } else {
+          url = `https://manga-api.vercel.app/manga/comick/recentrank?comic_types=${comic_types}`;
+        }
+       const { data } = await axios.get(url);
 
 
-     // Check if the response data contains the expected structure
+        console.log(`https://manga-roan-one.vercel.app/manga/comick/top?${comic_types}`);
+    // Check if the response data contains the expected structure
     if (data && Array.isArray(data.results)) {
       const mangaList = data.results;
 
@@ -48,7 +51,7 @@ const getAnime = async (id = 1) => {
         mangaList.map(async (manga) => {
           try {
             const { data: mangaDetails } = await axios.get(
-              `https://manga2-six.vercel.app/manga/comick/title/${manga.id}`
+              `https://manga-roan-one.vercel.app/manga/comick/title/${manga.id}`
             );
 
             console.log(`Fetched manga details for ${manga.id}:`, mangaDetails);
@@ -77,18 +80,14 @@ const getAnime = async (id = 1) => {
     console.error(err);
     setLoading(false);
   }
-  
 };
 
-
- 
+  
   
     useEffect(() => {
          getAnime();
-    setQuery(name);
-    
 
-   }, [comic_types, name, query]);
+   }, [comic_types]);
 
   return (
     <div>
@@ -96,10 +95,25 @@ const getAnime = async (id = 1) => {
         {!loading && (
 
                 <HomeDiv>
- 
-          
-  {filteredAnime.map((item, index) => (
-       <Wrapper   className="projcard projcard-blue">
+
+       <Heading>
+                 <Dropdown id="status-select" value={comic_types} onChange={handleTypeChange}>
+          {Types.map((TypeOption) => (
+            <option key={TypeOption.value} value={TypeOption.value}>
+              {TypeOption.label}
+            </option>
+          ))}
+       
+        </Dropdown>
+             <input
+        type="text"
+        placeholder="Search by name"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+            </Heading>
+   {filteredAnime.map((item, index) => (
+      <Wrapper   className="projcard projcard-blue">
  
         <div className="yawa">
                  <div className="projcard-innerbox">
@@ -142,9 +156,8 @@ const getAnime = async (id = 1) => {
          
       </div>
     </Wrapper>
-    ))}
-        
-        
+  ))}
+          
         </HomeDiv>
                             )}
 
@@ -152,9 +165,10 @@ const getAnime = async (id = 1) => {
   );
 }
 
+
 const HomeDiv = styled.div`
     margin: 1.5rem 5rem 1rem 5rem;
-        @media screen and (max-width: 1200px) {
+         @media screen and (max-width: 1200px) {
       margin: 1rem 1rem 0rem 1rem;
     }
   `;
@@ -276,7 +290,6 @@ const Wrapper = styled.div`
     color: #fff;
   }
 `;
-
 const Links = styled(Link)`
   text-decoration: none;
   color: white;
@@ -308,4 +321,5 @@ const Links = styled(Link)`
   }
   
 `;
+
 export default AnimeCards;

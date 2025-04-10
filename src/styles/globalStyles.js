@@ -13,8 +13,8 @@ const GlobalStyle = createGlobalStyle`
 		box-sizing: border-box;
 	}
 	body {
-		background: linear-gradient(to bottom, #161616 100%, rgba(22, 22, 22, 0.9) 75%, rgba(22, 22, 22, 0.8) 100%);
-		
+		background-color: #0e1726;
+		    scrollbar-color: #263855 #070c13;
 		font-family: 'Lexend', sans-serif;
 	}
 

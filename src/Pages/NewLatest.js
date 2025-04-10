@@ -27,9 +27,9 @@ const getManga = async (page = 1) => {
     setLoading(true);
    let url;
       if (type === 'all') {
-        url = `https://manga-roan-one.vercel.app/manga/comick/latest?page=${page}&order=new`;
+        url = `https://manga-api.vercel.app/manga/comick/latest?page=${page}&order=new`;
       } else {
-        url = `https://manga-roan-one.vercel.app/manga/comick/latest?type=${type}&page=${page}&order=new`;
+        url = `https://manga-api.vercel.app/manga/comick/latest?type=${type}&page=${page}&order=new`;
       }
     const { data } = await axios.get(url);
 
@@ -40,7 +40,7 @@ const getManga = async (page = 1) => {
     setLoading(false);
    }
 };
-    console.log(`https://manga-roan-one.vercel.app/manga/comick/latest?type=${type}&page=${page}&order=new`);
+    console.log(`https://manga-api.vercel.app/manga/comick/latest?type=${type}&page=${page}&order=new`);
 
 
      
@@ -55,6 +55,23 @@ const handleNextPage = () => {
   setPage(page + 1);
 };
 
+const timeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const difference = now - date;
+
+    const minutes = Math.floor(difference / 1000 / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+      return `${days} day${days > 1 ? 's' : ''} ago`;
+    } else if (hours > 0) {
+      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    } else {
+      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    }
+  };
 useEffect(() => {
   getManga(page);
 }, [page, type]);
@@ -78,13 +95,18 @@ useEffect(() => {
           <CardWrapper>
           {manga.results && manga.results.map(item =>(
               <Wrapper key={item.id}>
-                <Links  to={`/read/manga/comick/chapter/${item.chapterId}`}> 
- 
+                  
+                <Links  to={`/read/manga/comick/chapter/${item.chapterId}`}
+                     state={{ slug: `${item.slug}` }}
+                > 
+       <TONG2> 
+                          <p>{timeAgo(item.created_at)}</p> {/* Displaying time only */}
+            </TONG2>
                    
                    <img className="card-img" src={item.thumbnail.url} alt={item.title.romaji} />
                 <TONG>         <p>{item.title}</p>
                                           <p>Chapter {item.chap}</p>
-
+                
                   </TONG> {/* Display countdown timer */}
 
                 </Links>
@@ -136,6 +158,21 @@ const Tabs = styled.div`
   
     
   `;
+
+  const TONG2 = styled.p`
+position: absolute;
+ overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+       background: rgba(0, 0, 0, 0.8);
+      
+ 
+  @media screen and (max-width: 600px) {
+         width: 25% !important;
+
+    }
+`;
 const TabButton = styled.button`
    outline: none;
   background: #404040;
@@ -159,13 +196,17 @@ const TabButton = styled.button`
 `;
 const TONG = styled.p`
 position: absolute;
- overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+   
     
     width: 100%;
        background: rgba(0, 0, 0, 0.8);
      margin-top: -45px;      
+
+     p{
+      overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+     }
        &:hover {
           border-radius: 0.5rem;
 
